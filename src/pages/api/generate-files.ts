@@ -15,33 +15,24 @@ export default async function handler(
 ) {
   if (req.method === "POST") {
     const folderPath = path.join(process.cwd(), "public", "generated-files");
-    console.log("body", typeof req.body);
 
     const { htmlCode, cssCode, jsCode } = JSON.parse(req.body) as RequestBody;
-
-    console.log(htmlCode, cssCode, jsCode);
-
     const formattedHtmlCode = handleHtmlCode(htmlCode);
 
-    // Ensure the folder exists
     if (!fs.existsSync(folderPath)) {
       fs.mkdirSync(folderPath, { recursive: true });
     }
 
-    // Create HTML file
     fs.writeFileSync(path.join(folderPath, "index.html"), formattedHtmlCode);
 
-    // Create CSS file
     fs.writeFileSync(path.join(folderPath, "styles.css"), cssCode);
 
-    // Create JS file
     fs.writeFileSync(path.join(folderPath, "script.js"), jsCode);
 
-    // Create a zip file
     const zipPath = path.join(folderPath, "files.zip");
     const output = fs.createWriteStream(zipPath);
     const archive = archiver("zip", {
-      zlib: { level: 9 }, // Sets the compression level
+      zlib: { level: 9 },
     });
 
     output.on("close", function () {

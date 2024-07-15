@@ -92,8 +92,6 @@ export const EditorLayout = forwardRef((props: Props, ref) => {
         setLayout(type);
       },
       downloadCode: () => {
-        console.log(htmlCode, cssCode, jsCode);
-
         props.downloadCode(htmlCode, cssCode, jsCode);
       },
       changeSize: (type: sizeType) => {
@@ -157,7 +155,12 @@ export const EditorLayout = forwardRef((props: Props, ref) => {
             />
           </Panel>
           <PanelResizeHandle
-            className={cn("bg-black", layout == "t" ? "w-3" : "h-3")}
+            className={cn(
+              "bg-black",
+              layout == "t"
+                ? "w-3 border-r-[0.5px] border-l-[0.5px] border-zinc-500"
+                : "h-3 border-t-[0.5px] border-b-[0.5px] border-zinc-500"
+            )}
           />
           <Panel ref={cssRef}>
             <CodeEditor
@@ -170,7 +173,12 @@ export const EditorLayout = forwardRef((props: Props, ref) => {
             />
           </Panel>
           <PanelResizeHandle
-            className={cn("bg-black", layout == "t" ? "w-3" : "h-3")}
+            className={cn(
+              "bg-black",
+              layout == "t"
+                ? "w-3 border-r-[0.5px] border-l-[0.5px] border-zinc-500"
+                : "h-3 border-t-[0.5px] border-b-[0.5px] border-zinc-500"
+            )}
           />
           <Panel ref={jsRef}>
             <CodeEditor
@@ -193,14 +201,24 @@ export const EditorLayout = forwardRef((props: Props, ref) => {
           <>
             {editors}{" "}
             <PanelResizeHandle
-              className={cn("bg-black", layout == "t" ? "h-3" : "w-3")}
+              className={cn(
+                "bg-black",
+                layout == "t"
+                  ? "h-3 border-t-[0.5px] border-b-[0.5px] border-zinc-500"
+                  : "w-3 border-r-[0.5px] border-l-[0.5px] border-zinc-500"
+              )}
             />{" "}
             {output}
           </>
         )}
         {layout == "l" && (
           <>
-            {output} <PanelResizeHandle className={cn("bg-black w-3")} />{" "}
+            {output}{" "}
+            <PanelResizeHandle
+              className={cn(
+                "bg-black w-3 border-r-[0.5px] border-l-[0.5px] border-zinc-500"
+              )}
+            />{" "}
             {editors}
           </>
         )}

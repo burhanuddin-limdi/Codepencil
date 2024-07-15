@@ -8,9 +8,8 @@ import {
 import { FunctionComponent, useState } from "react";
 import { Button } from "../ui/button";
 import { EditorLayoutRef } from "../editor/EditorLayout";
-import { PanelLeft, PanelRight, PanelTop } from "lucide-react";
+import { PanelLeft, PanelRight, PanelTop, RotateCcw } from "lucide-react";
 import { Tooltip } from "../ui/Tooltip";
-import { TooltipContent } from "../ui/shadcn-tooltip";
 
 interface LayoutDropdownProps {
   layoutRef: React.RefObject<EditorLayoutRef>;
@@ -27,7 +26,7 @@ const LayoutDropdown: FunctionComponent<LayoutDropdownProps> = (
         <Tooltip tooltipContent={"Change Layout"}>
           <DropdownMenuTrigger asChild>
             <Button
-              variant="ghost"
+              variant="destructive"
               className="focus-visible:ring-0 focus-visible:ring-offset-0 bg-zinc-800 text-white transition-all px-2 hover:bg-zinc-600"
               size="sm"
             >

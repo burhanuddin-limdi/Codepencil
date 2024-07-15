@@ -3,6 +3,8 @@ import { EditorView, basicSetup } from "codemirror";
 import { useLayoutEffect } from "react";
 import { EditorState } from "@codemirror/state";
 import { ViewPlugin } from "@codemirror/view";
+import EditorDropdown from "./EditorDropdown";
+import { solarizedDark } from "@/lib/theme";
 
 interface Props {
   language: Function;
@@ -34,6 +36,7 @@ export const CodeEditor: React.FC<Props> = (props: Props) => {
           ),
           basicSetup,
           language(),
+          solarizedDark,
           EditorView.lineWrapping,
         ],
       }),
@@ -41,24 +44,20 @@ export const CodeEditor: React.FC<Props> = (props: Props) => {
     });
     document.querySelector(`#${displayName}>.cm-editor:nth-child(2)`)?.remove();
   });
+
+  function expand() {
+    props.expand(displayName);
+  }
+
+  function minimize() {
+    props.collapse(displayName);
+  }
+
   return (
-    <div className="h-full bg-[#002b36] overflow-y-auto w-full border-b border-[#2aa198]">
-      <div className="bg-zinc-900 flex justify-between px-4 py-2">
+    <div className="h-full bg-zinc-700 overflow-y-auto w-full">
+      <div className="bg-zinc-900 flex justify-between px-4 py-2 items-center">
         <p className="text-white uppercase font-bold">{displayName}</p>
-        <div className="flex gap-2">
-          <button
-            className="text-white border rounded-md px-2"
-            onClick={() => props.expand(displayName)}
-          >
-            Expand
-          </button>
-          <button
-            className="text-white border rounded-md px-2"
-            onClick={() => props.collapse(displayName)}
-          >
-            Minimize
-          </button>
-        </div>
+        <EditorDropdown onExpand={expand} onMinimize={minimize} />
       </div>
       <div id={displayName} className="w-full flex-grow h-full"></div>
     </div>
