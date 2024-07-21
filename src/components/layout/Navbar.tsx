@@ -5,7 +5,7 @@ import LayoutDropdown from "./LayoutDropdown";
 import { ToastContainer } from "react-toastify";
 import { EditorLayoutRef } from "../editor/EditorLayout";
 import { CodeXml, FileCode2, Monitor, RotateCcw } from "lucide-react";
-import AuthButtons from "../auth/AuthButtons";
+import Link from "next/link";
 
 interface Props {
   layoutRef: React.RefObject<EditorLayoutRef>;
@@ -14,7 +14,7 @@ interface Props {
 export default function Navbar(props: Props) {
   return (
     <>
-      <nav className="bg-zinc-800 w-screen py-3 px-3 flex items-center justify-between border-b-[0.5px] border-zinc-600">
+      <nav className="bg-zinc-800 w-full py-3 px-3 flex items-center justify-between border-b-[0.5px] border-zinc-600">
         <img src="images/logo.svg" className="h-10" alt="" />
         <div className="flex gap-2">
           <Tooltip tooltipContent={"Reset Layout"}>
@@ -58,7 +58,14 @@ export default function Navbar(props: Props) {
             </Button>
           </Tooltip>
           <LayoutDropdown layoutRef={props.layoutRef} />
-          <AuthButtons />
+          <div className="flex gap-2">
+            <Button asChild>
+              <Link href="/signup">Sign Up</Link>
+            </Button>
+            <Button asChild>
+              <Link href="/login">Login</Link>
+            </Button>
+          </div>
         </div>
       </nav>
       <ToastContainer />

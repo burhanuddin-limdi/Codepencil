@@ -5,7 +5,7 @@ interface GithubLoginButtonProps {}
 
 const GithubLoginButton: FunctionComponent<GithubLoginButtonProps> = () => {
   return (
-    <Button className="bg-zinc-900 text-zinc-300 hover:text-white hover:border border border-zinc-200">
+    <Button className="bg-zinc-900 text-zinc-300 hover:text-white hover:border border border-zinc-200 w-full my-3 flex justify-center items-center">
       <img
         src="/images/github-logo.svg"
         alt=""

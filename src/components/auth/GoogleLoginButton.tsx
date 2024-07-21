@@ -5,7 +5,7 @@ interface GoogleLoginButtonProps {}
 
 const GoogleLoginButton: FunctionComponent<GoogleLoginButtonProps> = () => {
   return (
-    <Button className="bg-zinc-200 text-black hover:bg-white hover:border border border-zinc-200">
+    <Button className="bg-zinc-200 text-black hover:bg-white hover:border border border-zinc-200 w-full my-3 flex justify-center items-center">
       <img src="/images/google-logo.svg" alt="" className="w-5 h-5 mr-3" />{" "}
       Login in with Google
     </Button>

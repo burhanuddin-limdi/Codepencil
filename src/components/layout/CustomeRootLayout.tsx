@@ -37,7 +37,6 @@ const CustomRootLayout: FunctionComponent<CustomRootLayoutProps> = ({
       button.addEventListener("click", createRipple);
     }
 
-    // Cleanup function to remove event listeners
     return () => {
       for (const button of buttons) {
         button.removeEventListener("click", createRipple);
