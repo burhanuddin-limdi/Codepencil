@@ -2,9 +2,21 @@
 import GithubLoginButton from "@/components/auth/GithubLoginButton";
 import GoogleLoginButton from "@/components/auth/GoogleLoginButton";
 import { PasswordInput } from "@/components/ui/PasswordInput";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
+import Link from "next/router";
 import { useRouter } from "next/navigation";
 import { FunctionComponent, useState } from "react";
 import { ToastContainer, toast } from "react-toastify";
@@ -20,6 +32,8 @@ const SignUpPage: FunctionComponent<SignUpPageProps> = () => {
     password: "",
     confirmPassword: "",
   });
+
+  const [open, setOpen] = useState(false);
 
   const router = useRouter();
 
@@ -70,13 +84,9 @@ const SignUpPage: FunctionComponent<SignUpPageProps> = () => {
       });
 
       if (res.ok) {
-        const data = await res.json();
-        console.log(data);
-        toast.success("Sign up successful");
-        router.push("/login");
+        setOpen(true);
       } else {
         const data = await res.json();
-        console.log(data);
         if (data.error.includes("email-already-in-use")) {
           toast.error("Email already exists");
         } else {
@@ -138,11 +148,29 @@ const SignUpPage: FunctionComponent<SignUpPageProps> = () => {
             </Button>
             <hr className="my-3" />
             <GoogleLoginButton />
-            <GithubLoginButton />
           </form>
         </CardContent>
       </Card>
       <ToastContainer />
+      <AlertDialog open={open}>
+        <AlertDialogContent className="bg-zinc-950 border border-zinc-100">
+          <AlertDialogHeader>
+            <AlertDialogTitle className="text-white">
+              Sign Up Successful!
+            </AlertDialogTitle>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogAction
+              className="bg-zinc-200 text-zinc-900 hover:text-black hover:bg-white hover:border border border-zinc-200"
+              onClick={() => {
+                router.push("/login");
+              }}
+            >
+              Login to continue
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </main>
   );
 };
