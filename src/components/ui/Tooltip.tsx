@@ -18,10 +18,10 @@ export const Tooltip: FunctionComponent<TooltipProps> = ({
 }) => {
   return (
     <TooltipProvider>
-      <ShadcnTooltip delayDuration={250} disableHoverableContent={true}>
+      <ShadcnTooltip delayDuration={200} disableHoverableContent={true}>
         <TooltipTrigger asChild>{children}</TooltipTrigger>
         <TooltipContent
-          className="bg-zinc-200 text-xs px-1 py-0"
+          className="bg-zinc-200 text-xs px-2 py-1"
           sideOffset={10}
         >
           <p>{tooltipContent}</p>

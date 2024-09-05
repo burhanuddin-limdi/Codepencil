@@ -1,5 +1,4 @@
 "use client";
-import GithubLoginButton from "@/components/auth/GithubLoginButton";
 import GoogleLoginButton from "@/components/auth/GoogleLoginButton";
 import { PasswordInput } from "@/components/ui/PasswordInput";
 import { Button } from "@/components/ui/button";
@@ -8,6 +7,7 @@ import { Input } from "@/components/ui/input";
 import { useRouter } from "next/navigation";
 import { FunctionComponent, useState } from "react";
 import { ToastContainer, toast } from "react-toastify";
+import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
 
 interface LoginPageProps {}
 
@@ -52,29 +52,46 @@ const LoginPage: FunctionComponent<LoginPageProps> = () => {
 
     const authData = { email, password };
 
-    try {
-      const res = await fetch("/api/login", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(authData),
+    const auth = getAuth();
+    signInWithEmailAndPassword(auth, email, password)
+      .then((userCredential) => {
+        const user = userCredential.user;
+        router.push("/editor");
+      })
+      .catch((error) => {
+        const errorCode = error.code;
+        const errorMessage = error.message;
+        toast.error(errorMessage);
       });
-      const data = await res.json();
 
-      if (res.ok) {
-        console.log(data);
-        // router.push("/editor");
-      } else {
-        if (data.error.includes("email-already-in-use")) {
-          toast.error("Email already exists");
-        } else {
-          toast.error("Failed to login");
-        }
-      }
-    } catch (error) {
-      toast.error("Something went wrong");
-    }
+    // try {
+    //   const res = await fetch("/api/login", {
+    //     method: "POST",
+    //     headers: {
+    //       "Content-Type": "application/json",
+    //     },
+    //     body: JSON.stringify(authData),
+    //   });
+    //   const data = await res.json();
+
+    //   if (res.ok) {
+    //     console.log(data);
+    //     // router.push("/editor");
+    //     data.user.getIdToken().then((idToken) => {
+    //       console.log(idToken);
+    //     });
+    //     const accessToken = data.user.stsTokenManager.accessToken;
+    //     localStorage.setItem("accessToken", accessToken);
+    //   } else {
+    //     if (data.error.includes("email-already-in-use")) {
+    //       toast.error("Email already exists");
+    //     } else {
+    //       toast.error("Failed to login");
+    //     }
+    //   }
+    // } catch (error) {
+    //   toast.error("Something went wrong");
+    // }
   };
 
   return (

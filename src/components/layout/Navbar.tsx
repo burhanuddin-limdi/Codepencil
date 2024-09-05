@@ -1,17 +1,37 @@
 "use client";
+import Link from "next/link";
 import { Button } from "../ui/button";
 import { Tooltip } from "../ui/Tooltip";
+import { useEffect, useState } from "react";
 import LayoutDropdown from "./LayoutDropdown";
 import { ToastContainer } from "react-toastify";
+import { auth as app } from "@/../firebaseConfig";
 import { EditorLayoutRef } from "../editor/EditorLayout";
+import { getAuth, onAuthStateChanged } from "firebase/auth";
 import { CodeXml, FileCode2, Monitor, RotateCcw } from "lucide-react";
-import Link from "next/link";
+import ProfileButton from "../auth/ProfileButton";
 
 interface Props {
   layoutRef: React.RefObject<EditorLayoutRef>;
   handleDownload: () => void;
 }
 export default function Navbar(props: Props) {
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  useEffect(() => {
+    app;
+    const auth = getAuth();
+    onAuthStateChanged(auth, (user) => {
+      if (user) {
+        const uid = user.uid;
+        console.log("logged in", uid);
+        setIsLoggedIn(true);
+      } else {
+        console.log("logged out");
+        setIsLoggedIn(false);
+      }
+    });
+  }, []);
+
   return (
     <>
       <nav className="bg-zinc-800 w-full py-3 px-3 flex items-center justify-between border-b-[0.5px] border-zinc-600">
@@ -58,14 +78,21 @@ export default function Navbar(props: Props) {
             </Button>
           </Tooltip>
           <LayoutDropdown layoutRef={props.layoutRef} />
-          <div className="flex gap-2">
-            <Button asChild>
-              <Link href="/signup">Sign Up</Link>
-            </Button>
-            <Button asChild>
-              <Link href="/login">Login</Link>
-            </Button>
-          </div>
+          {!isLoggedIn && (
+            <div className="flex gap-2">
+              <Button asChild>
+                <Link href="/signup">Sign Up</Link>
+              </Button>
+              <Button asChild>
+                <Link href="/login">Login</Link>
+              </Button>
+            </div>
+          )}
+          {isLoggedIn && (
+            <>
+              <ProfileButton />
+            </>
+          )}
         </div>
       </nav>
       <ToastContainer />
