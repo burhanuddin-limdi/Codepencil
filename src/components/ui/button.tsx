@@ -51,10 +51,7 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
     }
 
     function createRipple(event) {
-      console.log(event);
-
       const button = event.currentTarget;
-
       const circle = document.createElement("span");
       const diameter = Math.max(button.clientWidth, button.clientHeight);
       const radius = diameter / 2;

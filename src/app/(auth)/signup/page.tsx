@@ -71,9 +71,6 @@ const SignUpPage: FunctionComponent<SignUpPageProps> = () => {
 
     if (!valid) return;
 
-    const authData = { email, password };
-    console.log(authData);
-
     try {
       const res = await fetch("/api/register", {
         method: "POST",

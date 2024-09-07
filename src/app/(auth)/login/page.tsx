@@ -63,35 +63,6 @@ const LoginPage: FunctionComponent<LoginPageProps> = () => {
         const errorMessage = error.message;
         toast.error(errorMessage);
       });
-
-    // try {
-    //   const res = await fetch("/api/login", {
-    //     method: "POST",
-    //     headers: {
-    //       "Content-Type": "application/json",
-    //     },
-    //     body: JSON.stringify(authData),
-    //   });
-    //   const data = await res.json();
-
-    //   if (res.ok) {
-    //     console.log(data);
-    //     // router.push("/editor");
-    //     data.user.getIdToken().then((idToken) => {
-    //       console.log(idToken);
-    //     });
-    //     const accessToken = data.user.stsTokenManager.accessToken;
-    //     localStorage.setItem("accessToken", accessToken);
-    //   } else {
-    //     if (data.error.includes("email-already-in-use")) {
-    //       toast.error("Email already exists");
-    //     } else {
-    //       toast.error("Failed to login");
-    //     }
-    //   }
-    // } catch (error) {
-    //   toast.error("Something went wrong");
-    // }
   };
 
   return (

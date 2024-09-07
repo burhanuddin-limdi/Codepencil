@@ -21,7 +21,7 @@ export const Tooltip: FunctionComponent<TooltipProps> = ({
       <ShadcnTooltip delayDuration={200} disableHoverableContent={true}>
         <TooltipTrigger asChild>{children}</TooltipTrigger>
         <TooltipContent
-          className="bg-zinc-200 text-xs px-2 py-1"
+          className="bg-zinc-800 text-xs px-2 text-white border-zinc-500"
           sideOffset={10}
         >
           <p>{tooltipContent}</p>

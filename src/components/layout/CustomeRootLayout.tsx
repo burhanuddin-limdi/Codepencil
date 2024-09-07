@@ -10,8 +10,6 @@ const CustomRootLayout: FunctionComponent<CustomRootLayoutProps> = ({
 }) => {
   useEffect(() => {
     function createRipple(event) {
-      console.log(event);
-
       const button = event.currentTarget;
 
       const circle = document.createElement("span");

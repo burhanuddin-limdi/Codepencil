@@ -55,7 +55,7 @@ export const CodeEditor: React.FC<Props> = (props: Props) => {
 
   return (
     <div className="h-full bg-zinc-700 overflow-y-auto w-full">
-      <div className="bg-zinc-900 flex justify-between px-4 py-2 items-center">
+      <div className="bg-zinc-900 flex justify-between px-4 py-2 items-center sticky top-0 z-10">
         <p className="text-white uppercase font-bold">{displayName}</p>
         <EditorDropdown onExpand={expand} onMinimize={minimize} />
       </div>

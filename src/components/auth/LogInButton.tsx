@@ -22,9 +22,6 @@ const LogInButton: FunctionComponent<SignUpButtonProps> = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    const authData = { email, password };
-    console.log(authData);
-
     const res = await fetch("/api/login", {
       method: "POST",
       headers: {
@@ -34,8 +31,6 @@ const LogInButton: FunctionComponent<SignUpButtonProps> = () => {
     });
 
     const data = await res.json();
-
-    console.log(data);
   };
   return (
     <AlertDialog open={open}>

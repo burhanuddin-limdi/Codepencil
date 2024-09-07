@@ -7,27 +7,26 @@ import LayoutDropdown from "./LayoutDropdown";
 import { ToastContainer } from "react-toastify";
 import { auth as app } from "@/../firebaseConfig";
 import { EditorLayoutRef } from "../editor/EditorLayout";
-import { getAuth, onAuthStateChanged } from "firebase/auth";
-import { CodeXml, FileCode2, Monitor, RotateCcw } from "lucide-react";
+import { User, getAuth, onAuthStateChanged } from "firebase/auth";
+import { CodeXml, FileDown, Monitor, RotateCcw } from "lucide-react";
 import ProfileButton from "../auth/ProfileButton";
+import SaveCodeButton from "../editor/SaveCodeButton";
+import ProjectName from "../editor/ProjectName";
 
 interface Props {
   layoutRef: React.RefObject<EditorLayoutRef>;
   handleDownload: () => void;
 }
 export default function Navbar(props: Props) {
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [user, setUser] = useState<User | null>(null);
   useEffect(() => {
     app;
     const auth = getAuth();
     onAuthStateChanged(auth, (user) => {
       if (user) {
-        const uid = user.uid;
-        console.log("logged in", uid);
-        setIsLoggedIn(true);
+        setUser(user);
       } else {
-        console.log("logged out");
-        setIsLoggedIn(false);
+        setUser(null);
       }
     });
   }, []);
@@ -35,7 +34,10 @@ export default function Navbar(props: Props) {
   return (
     <>
       <nav className="bg-zinc-800 w-full py-3 px-3 flex items-center justify-between border-b-[0.5px] border-zinc-600">
-        <img src="images/logo.svg" className="h-10" alt="" />
+        <div className="flex items-center gap-3">
+          <img src="images/logo.svg" className="h-10" alt="" />
+          <ProjectName />
+        </div>
         <div className="flex gap-2">
           <Tooltip tooltipContent={"Reset Layout"}>
             <Button
@@ -57,7 +59,7 @@ export default function Navbar(props: Props) {
               <CodeXml />{" "}
             </Button>
           </Tooltip>
-          <Tooltip tooltipContent={"View Output"}>
+          <Tooltip tooltipContent={"Expand Output"}>
             <Button
               variant="ghost"
               className="focus-visible:ring-0 focus-visible:ring-offset-0 bg-zinc-800 text-white transition-all px-2 hover:bg-zinc-600"
@@ -74,11 +76,12 @@ export default function Navbar(props: Props) {
               onClick={props.handleDownload}
               size={"sm"}
             >
-              <FileCode2 />{" "}
+              <FileDown />{" "}
             </Button>
           </Tooltip>
+
           <LayoutDropdown layoutRef={props.layoutRef} />
-          {!isLoggedIn && (
+          {!user && (
             <div className="flex gap-2">
               <Button asChild>
                 <Link href="/signup">Sign Up</Link>
@@ -88,9 +91,9 @@ export default function Navbar(props: Props) {
               </Button>
             </div>
           )}
-          {isLoggedIn && (
+          {user && (
             <>
-              <ProfileButton />
+              <SaveCodeButton user={user} /> <ProfileButton user={user} />
             </>
           )}
         </div>
