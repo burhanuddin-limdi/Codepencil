@@ -19,6 +19,7 @@ import {
 import { User } from "firebase/auth";
 import { doc, getDoc } from "firebase/firestore";
 import { db } from "../../../firebaseConfig";
+import Link from "next/link";
 
 interface ProfileButtonProps {
   user: User;
@@ -34,11 +35,12 @@ const ProfileButton: FunctionComponent<ProfileButtonProps> = ({ user }) => {
     const uid = user.uid;
     const userDocRef = doc(db, "users", uid);
     const userDocSnap = await getDoc(userDocRef);
-    console.log(userDocSnap);
+    console.log(userDocSnap.exists());
 
     if (userDocSnap.exists()) {
       const data = userDocSnap.data().projects || [];
       setProjects(data);
+      console.log(data);
     }
   }
 
@@ -70,8 +72,10 @@ const ProfileButton: FunctionComponent<ProfileButtonProps> = ({ user }) => {
                 <DropdownMenuSubContent className="bg-zinc-800 text-white border-zinc-400 ">
                   {projects.map((project: any) => {
                     return (
-                      <DropdownMenuItem key={project.projectId}>
-                        <span>{project.projectId}</span>
+                      <DropdownMenuItem key={project.projectId} asChild>
+                        <Link href={`/project?id=${project.projectId}`}>
+                          {project.name}
+                        </Link>
                       </DropdownMenuItem>
                     );
                   })}

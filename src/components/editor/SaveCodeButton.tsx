@@ -1,33 +1,18 @@
-"use client";
-import { FunctionComponent, useEffect } from "react";
-import { Button } from "../ui/button";
-import { User } from "firebase/auth";
-import { doc, getDoc, setDoc } from "firebase/firestore";
-import { db } from "@/../firebaseConfig";
-import { v4 as uuidv4 } from "uuid";
 import moment from "moment";
+import { v4 as uuidv4 } from "uuid";
+import { User } from "firebase/auth";
+import { Button } from "../ui/button";
+import { db } from "@/../firebaseConfig";
+import { FunctionComponent, useEffect } from "react";
+import { doc, getDoc, setDoc } from "firebase/firestore";
+import { useRouter } from "next/navigation";
 
 interface SaveCodeButtonProps {
   user: User;
 }
 
 const SaveCodeButton: FunctionComponent<SaveCodeButtonProps> = ({ user }) => {
-  useEffect(() => {
-    getData();
-  }, []);
-
-  async function getData() {
-    const uid = user.uid;
-    const userDocRef = doc(db, "users", uid);
-    const userDocSnap = await getDoc(userDocRef);
-    console.log(userDocSnap);
-
-    if (userDocSnap.exists()) {
-      const data = userDocSnap.data();
-      console.log(data);
-    }
-  }
-
+  const router = useRouter();
   async function save() {
     const htmlCode = localStorage.getItem("codepencil-html");
     const cssCode = localStorage.getItem("codepencil-css");
@@ -35,21 +20,23 @@ const SaveCodeButton: FunctionComponent<SaveCodeButtonProps> = ({ user }) => {
 
     if (user) {
       const uid = user.uid;
-      console.log(uid);
       const userDocRef = doc(db, "users", uid);
+      const projectId = uuidv4();
+      const projectDocRef = doc(db, "projects", projectId);
       try {
         const userDocSnap = await getDoc(userDocRef);
+        console.log(userDocSnap.exists());
+
         let currentProjects: any = [];
 
         if (userDocSnap.exists()) {
           currentProjects = userDocSnap.data().projects || [];
+          console.log(currentProjects);
         }
 
         currentProjects.push({
-          html: htmlCode,
-          css: cssCode,
-          js: jsCode,
-          projectId: uuidv4(),
+          name: "test",
+          projectId: projectId,
           createdAt: moment().format("YYYY-MM-DD HH:mm:ss"),
         });
 
@@ -58,8 +45,18 @@ const SaveCodeButton: FunctionComponent<SaveCodeButtonProps> = ({ user }) => {
           { projects: currentProjects },
           { merge: true }
         );
+        await setDoc(projectDocRef, {
+          uid,
+          js: jsCode,
+          css: cssCode,
+          html: htmlCode,
+          projectId: projectId,
+          createdAt: moment().format("YYYY-MM-DD HH:mm:ss"),
+        });
 
         console.log("Project saved successfully.");
+        localStorage.clear();
+        router.push(`/project?id=${projectId}`);
       } catch (error) {
         console.error("Error saving project:", error);
       }

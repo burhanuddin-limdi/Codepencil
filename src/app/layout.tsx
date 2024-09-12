@@ -1,3 +1,4 @@
+import StoreProvider from "@/store/StoreProvider";
 import "./globals.css";
 import { Metadata } from "next";
 import { Inter } from "next/font/google";
@@ -17,8 +18,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={inter.className}>
-        {/* <CustomRootLayout>{children}</CustomRootLayout> */}
-        {children}
+        <StoreProvider>{children}</StoreProvider>
       </body>
     </html>
   );

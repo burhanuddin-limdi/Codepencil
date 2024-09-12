@@ -7,18 +7,21 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { FunctionComponent, useState } from "react";
 import { Button } from "../ui/button";
-import { EditorLayoutRef } from "../editor/EditorLayout";
 import { PanelLeft, PanelRight, PanelTop } from "lucide-react";
 import { Tooltip } from "../ui/Tooltip";
+import { changeLayout } from "@/store/features/editor-layout.slice";
+import { useAppDispatch, useAppSelector } from "@/store/hooks";
 
-interface LayoutDropdownProps {
-  layoutRef: React.RefObject<EditorLayoutRef>;
-}
+interface LayoutDropdownProps {}
 
 const LayoutDropdown: FunctionComponent<LayoutDropdownProps> = (
   props: LayoutDropdownProps
 ) => {
-  const [layoutType, setlayoutType] = useState("t");
+  const dispatch = useAppDispatch();
+
+  const layoutType = useAppSelector(
+    (state) => state.editorLayoutSlice.value.layoutType
+  );
 
   return (
     <>
@@ -44,8 +47,7 @@ const LayoutDropdown: FunctionComponent<LayoutDropdownProps> = (
           <DropdownMenuGroup className="flex">
             <DropdownMenuItem
               onClick={() => {
-                props.layoutRef?.current?.setLayout("r");
-                setlayoutType("r");
+                dispatch(changeLayout("r"));
               }}
               className="focus:bg-zinc-600 hover:text-black text-white"
             >
@@ -53,8 +55,7 @@ const LayoutDropdown: FunctionComponent<LayoutDropdownProps> = (
             </DropdownMenuItem>
             <DropdownMenuItem
               onClick={() => {
-                props.layoutRef?.current?.setLayout("l");
-                setlayoutType("l");
+                dispatch(changeLayout("l"));
               }}
               className="focus:bg-zinc-600 hover:text-black text-white"
             >
@@ -62,8 +63,7 @@ const LayoutDropdown: FunctionComponent<LayoutDropdownProps> = (
             </DropdownMenuItem>
             <DropdownMenuItem
               onClick={() => {
-                props.layoutRef?.current?.setLayout("t");
-                setlayoutType("t");
+                dispatch(changeLayout("t"));
               }}
               className="focus:bg-zinc-600 hover:text-black text-white"
             >

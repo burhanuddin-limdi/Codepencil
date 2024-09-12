@@ -4,20 +4,19 @@ import { Button } from "../ui/button";
 import { Tooltip } from "../ui/Tooltip";
 import { useEffect, useState } from "react";
 import LayoutDropdown from "./LayoutDropdown";
-import { ToastContainer } from "react-toastify";
+import { ToastContainer, toast } from "react-toastify";
 import { auth as app } from "@/../firebaseConfig";
-import { EditorLayoutRef } from "../editor/EditorLayout";
 import { User, getAuth, onAuthStateChanged } from "firebase/auth";
 import { CodeXml, FileDown, Monitor, RotateCcw } from "lucide-react";
 import ProfileButton from "../auth/ProfileButton";
 import SaveCodeButton from "../editor/SaveCodeButton";
 import ProjectName from "../editor/ProjectName";
+import { changeSize } from "@/store/features/editor-size.slice";
+import { useAppDispatch } from "@/store/hooks";
 
-interface Props {
-  layoutRef: React.RefObject<EditorLayoutRef>;
-  handleDownload: () => void;
-}
+interface Props {}
 export default function Navbar(props: Props) {
+  const dispatch = useAppDispatch();
   const [user, setUser] = useState<User | null>(null);
   useEffect(() => {
     app;
@@ -31,6 +30,29 @@ export default function Navbar(props: Props) {
     });
   }, []);
 
+  async function downloadCode() {
+    const htmlCode: string = localStorage.getItem("codepencil-html") || "";
+    const cssCode: string = localStorage.getItem("codepencil-css") || "";
+    const jsCode: string = localStorage.getItem("codepencil-js") || "";
+    const response = await fetch("/api/generate-files", {
+      method: "POST",
+      body: JSON.stringify({ htmlCode, cssCode, jsCode }),
+    });
+
+    if (response.status === 200) {
+      toast("Download Started");
+      const blob = await response.blob();
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.style.display = "none";
+      a.href = url;
+      a.download = "files.zip";
+      document.body.appendChild(a);
+      a.click();
+      window.URL.revokeObjectURL(url);
+    }
+  }
+
   return (
     <>
       <nav className="bg-zinc-800 w-full py-3 px-3 flex items-center justify-between border-b-[0.5px] border-zinc-600">
@@ -43,7 +65,7 @@ export default function Navbar(props: Props) {
             <Button
               variant="ghost"
               className="focus-visible:ring-0 focus-visible:ring-offset-0 bg-zinc-800 text-white transition-all px-2 hover:bg-zinc-600"
-              onClick={() => props.layoutRef?.current?.changeSize("r")}
+              onClick={() => dispatch(changeSize("r"))}
               size={"sm"}
             >
               <RotateCcw />{" "}
@@ -53,7 +75,7 @@ export default function Navbar(props: Props) {
             <Button
               variant="ghost"
               className="focus-visible:ring-0 focus-visible:ring-offset-0 bg-zinc-800 text-white transition-all px-2 hover:bg-zinc-600"
-              onClick={() => props.layoutRef?.current?.changeSize("e")}
+              onClick={() => dispatch(changeSize("e"))}
               size={"sm"}
             >
               <CodeXml />{" "}
@@ -63,7 +85,7 @@ export default function Navbar(props: Props) {
             <Button
               variant="ghost"
               className="focus-visible:ring-0 focus-visible:ring-offset-0 bg-zinc-800 text-white transition-all px-2 hover:bg-zinc-600"
-              onClick={() => props.layoutRef?.current?.changeSize("c")}
+              onClick={() => dispatch(changeSize("o"))}
               size={"sm"}
             >
               <Monitor />{" "}
@@ -73,14 +95,14 @@ export default function Navbar(props: Props) {
             <Button
               variant="ghost"
               className="focus-visible:ring-0 focus-visible:ring-offset-0 bg-zinc-800 text-white transition-all px-2 hover:bg-zinc-600"
-              onClick={props.handleDownload}
+              onClick={downloadCode}
               size={"sm"}
             >
               <FileDown />{" "}
             </Button>
           </Tooltip>
 
-          <LayoutDropdown layoutRef={props.layoutRef} />
+          <LayoutDropdown />
           {!user && (
             <div className="flex gap-2">
               <Button asChild>
