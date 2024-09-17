@@ -1,9 +1,9 @@
 "use client";
-import { FunctionComponent } from "react";
 import { Button } from "../ui/button";
+import { FunctionComponent } from "react";
+import { useRouter } from "next/navigation";
 import { signInWithPopup } from "firebase/auth";
 import { auth, googleProvider } from "../../../firebaseConfig";
-import { useRouter } from "next/navigation";
 
 interface GoogleLoginButtonProps {}
 

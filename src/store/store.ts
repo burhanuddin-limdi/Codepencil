@@ -1,10 +1,11 @@
 import { configureStore } from '@reduxjs/toolkit'
 import editorLayoutSlice from './features/editor-layout.slice'
 import editorSizeSlice from './features/editor-size.slice'
+import projectDataSlice from './features/project-data.slice'
 
 export const makeStore = () => {
     return configureStore({
-        reducer: { editorLayoutSlice, editorSizeSlice },
+        reducer: { editorLayoutSlice, editorSizeSlice, projectDataSlice },
     })
 }
 

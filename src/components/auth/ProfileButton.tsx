@@ -73,7 +73,7 @@ const ProfileButton: FunctionComponent<ProfileButtonProps> = ({ user }) => {
                   {projects.map((project: any) => {
                     return (
                       <DropdownMenuItem key={project.projectId} asChild>
-                        <Link href={`/project?id=${project.projectId}`}>
+                        <Link href={`/project/${project.projectId}`}>
                           {project.name}
                         </Link>
                       </DropdownMenuItem>

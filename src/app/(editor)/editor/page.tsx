@@ -1,7 +1,7 @@
 "use client";
-import EditorLayout from "@/components/editor/EditorLayout";
-import useLocalStorage from "@/hooks/useLocalStorage";
 import { useState } from "react";
+import useLocalStorage from "@/hooks/useLocalStorage";
+import EditorLayout from "@/components/editor/EditorLayout";
 
 export default function Editor() {
   const [htmlCode, sethtml] = useLocalStorage("html", "");

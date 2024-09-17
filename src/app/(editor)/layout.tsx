@@ -1,6 +1,6 @@
 "use client";
-import Navbar from "@/components/layout/Navbar";
 import { FunctionComponent } from "react";
+import Navbar from "@/components/layout/Navbar";
 
 interface EditorPageLayoutProps {
   children: React.ReactNode;

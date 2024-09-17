@@ -1,9 +1,9 @@
 "use client";
-import { FunctionComponent } from "react";
 import { Button } from "../ui/button";
+import { FunctionComponent } from "react";
+import { useRouter } from "next/navigation";
 import { signInWithRedirect } from "firebase/auth";
 import { auth, githubProvider } from "../../../firebaseConfig";
-import { useRouter } from "next/navigation";
 
 interface GithubLoginButtonProps {}
 

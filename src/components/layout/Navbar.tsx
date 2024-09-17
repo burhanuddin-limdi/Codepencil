@@ -4,20 +4,20 @@ import { Button } from "../ui/button";
 import { Tooltip } from "../ui/Tooltip";
 import { useEffect, useState } from "react";
 import LayoutDropdown from "./LayoutDropdown";
-import { ToastContainer, toast } from "react-toastify";
+import { useAppDispatch } from "@/store/hooks";
+import ProjectName from "../editor/ProjectName";
+import ProfileButton from "../auth/ProfileButton";
 import { auth as app } from "@/../firebaseConfig";
+import SaveCodeButton from "../editor/SaveCodeButton";
+import { ToastContainer, toast } from "react-toastify";
+import { changeSize } from "@/store/features/editor-size.slice";
 import { User, getAuth, onAuthStateChanged } from "firebase/auth";
 import { CodeXml, FileDown, Monitor, RotateCcw } from "lucide-react";
-import ProfileButton from "../auth/ProfileButton";
-import SaveCodeButton from "../editor/SaveCodeButton";
-import ProjectName from "../editor/ProjectName";
-import { changeSize } from "@/store/features/editor-size.slice";
-import { useAppDispatch } from "@/store/hooks";
 
-interface Props {}
-export default function Navbar(props: Props) {
+export default function Navbar() {
   const dispatch = useAppDispatch();
   const [user, setUser] = useState<User | null>(null);
+
   useEffect(() => {
     app;
     const auth = getAuth();
@@ -57,7 +57,9 @@ export default function Navbar(props: Props) {
     <>
       <nav className="bg-zinc-800 w-full py-3 px-3 flex items-center justify-between border-b-[0.5px] border-zinc-600">
         <div className="flex items-center gap-3">
-          <img src="images/logo.svg" className="h-10" alt="" />
+          <Link href={"/"}>
+            <img src="/images/logo.svg" className="h-10" alt="" />
+          </Link>
           <ProjectName />
         </div>
         <div className="flex gap-2">
