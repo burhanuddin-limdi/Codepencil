@@ -3,10 +3,21 @@ import { v4 as uuidv4 } from "uuid";
 import { User } from "firebase/auth";
 import { Button } from "../ui/button";
 import { db } from "@/../firebaseConfig";
-import { FunctionComponent, useEffect } from "react";
+import { FunctionComponent, useEffect, useState } from "react";
 import { useRouter, usePathname } from "next/navigation";
 import { useAppSelector } from "@/store/hooks";
 import { doc, getDoc, setDoc } from "firebase/firestore";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "../ui/alert-dialog";
 
 interface SaveCodeButtonProps {
   user: User;
@@ -15,6 +26,8 @@ interface SaveCodeButtonProps {
 const SaveCodeButton: FunctionComponent<SaveCodeButtonProps> = ({ user }) => {
   const router = useRouter();
   const pathname = usePathname();
+  const [showPopup, setShowPopup] = useState(false);
+
   const projectName = useAppSelector(
     (state) => state.projectDataSlice.value.name
   );
@@ -37,6 +50,10 @@ const SaveCodeButton: FunctionComponent<SaveCodeButtonProps> = ({ user }) => {
     (state) => state.projectDataSlice.value.projectId
   );
 
+  const projectUid = useAppSelector(
+    (state) => state.projectDataSlice.value.uid
+  );
+
   useEffect(() => {
     console.log(pathname);
   }, [pathname]);
@@ -49,68 +66,62 @@ const SaveCodeButton: FunctionComponent<SaveCodeButtonProps> = ({ user }) => {
   }
 
   async function updateProject() {
-    console.log("edit");
     if (user && projectId) {
-      const uid = user.uid;
-      const userDocRef = doc(db, "users", uid);
-      const projectDocRef = doc(db, "projects", projectId);
-      try {
-        const userDocSnap = await getDoc(userDocRef);
-        console.log(userDocSnap.exists());
+      if (projectUid === user.uid) {
+        console.log("owner");
+        const uid = user.uid;
+        const userDocRef = doc(db, "users", uid);
+        const projectDocRef = doc(db, "projects", projectId);
+        try {
+          const userDocSnap = await getDoc(userDocRef);
+          console.log(userDocSnap.exists());
 
-        let currentProjects: any = [];
+          let currentProjects: any = [];
 
-        if (userDocSnap.exists()) {
-          currentProjects = userDocSnap.data().projects || [];
-          console.log(currentProjects);
-        }
-
-        // currentProjects.push({
-        //   name: projectName,
-        //   projectId: projectId,
-        // });
-
-        currentProjects = currentProjects.map((project: any) => {
-          if (project.projectId === projectId) {
-            return {
-              name: projectName,
-              projectId: projectId,
-            };
+          if (userDocSnap.exists()) {
+            currentProjects = userDocSnap.data().projects || [];
+            console.log(currentProjects);
           }
-          return project;
-        });
 
-        await setDoc(
-          userDocRef,
-          { projects: currentProjects },
-          { merge: true }
-        );
-        await setDoc(projectDocRef, {
-          uid,
-          js: jsCode,
-          css: cssCode,
-          html: htmlCode,
-          name: projectName,
-          projectId: projectId,
-          createdAt: moment().format("YYYY-MM-DD HH:mm:ss"),
-        });
+          currentProjects = currentProjects.map((project: any) => {
+            if (project.projectId === projectId) {
+              return {
+                name: projectName,
+                projectId: projectId,
+              };
+            }
+            return project;
+          });
 
-        console.log("Project saved successfully.");
-        localStorage.clear();
-        router.push(`/project/${projectId}`);
-      } catch (error) {
-        console.error("Error saving project:", error);
+          await setDoc(
+            userDocRef,
+            { projects: currentProjects },
+            { merge: true }
+          );
+          await setDoc(projectDocRef, {
+            uid,
+            js: jsCode,
+            css: cssCode,
+            html: htmlCode,
+            name: projectName,
+            projectId: projectId,
+            createdAt: moment().format("YYYY-MM-DD HH:mm:ss"),
+          });
+
+          console.log("Project saved successfully.");
+          localStorage.clear();
+          router.push(`/project/${projectId}`);
+        } catch (error) {
+          console.log(error);
+        }
+      } else {
+        console.log("Error: You are not authorized to save this project.");
+        setShowPopup(true);
       }
     }
   }
 
   async function saveNewProject() {
-    const htmlCode =
-      localStorage.getItem("codepencil-html")?.slice(1, -1) || "";
-    const cssCode = localStorage.getItem("codepencil-css")?.slice(1, -1) || "";
-    const jsCode = localStorage.getItem("codepencil-js")?.slice(1, -1) || "";
-    console.log(htmlCode, cssCode, jsCode);
-
     if (user) {
       const uid = user.uid;
       const userDocRef = doc(db, "users", uid);
@@ -149,12 +160,14 @@ const SaveCodeButton: FunctionComponent<SaveCodeButtonProps> = ({ user }) => {
 
         console.log("Project saved successfully.");
         localStorage.clear();
+        setShowPopup(false);
         router.push(`/project/${projectId}`);
       } catch (error) {
         console.error("Error saving project:", error);
       }
     }
   }
+
   return (
     <>
       {(pathname?.includes("editor") || isProjectEdited) && (
@@ -162,6 +175,26 @@ const SaveCodeButton: FunctionComponent<SaveCodeButtonProps> = ({ user }) => {
           Save Code
         </Button>
       )}
+      <AlertDialog open={showPopup}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>
+              You are not the owner of this project
+            </AlertDialogTitle>
+            <AlertDialogDescription>
+              Do you want to clone this project to your account?
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel onClick={() => setShowPopup(false)}>
+              Cancel
+            </AlertDialogCancel>
+            <AlertDialogAction onClick={saveNewProject}>
+              Clone
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </>
   );
 };

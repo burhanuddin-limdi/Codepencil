@@ -8,7 +8,8 @@ interface ProjectDataState {
         htmlCode?: string,
         cssCode?: string,
         jsCode?: string,
-        projectId?: string
+        projectId?: string,
+        uid?: string
     }
 }
 
@@ -33,9 +34,11 @@ const projectDataSlice = createSlice({
         changeJs(state, action: PayloadAction<string>) {
             state.value.jsCode = action.payload
         },
-        setProjectId(state, action: PayloadAction<string>) {
-            state.value.projectId = action.payload
+        setProjectId(state, action: PayloadAction<{ projectId: string, uid: string }>) {
+            state.value.projectId = action.payload.projectId
+            state.value.uid = action.payload.uid
         },
+
     },
 })
 

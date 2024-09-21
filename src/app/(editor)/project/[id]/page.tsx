@@ -51,7 +51,7 @@ const Project: FunctionComponent<ProjectProps> = () => {
 
     if (projectId) {
       getData(projectId);
-      dispatch(setProjectId(projectId));
+      // dispatch(setProjectId({}));
     } else {
       router.push("/");
     }
@@ -77,6 +77,7 @@ const Project: FunctionComponent<ProjectProps> = () => {
     const js = projectData?.js;
 
     dispatch(changeName(projectData?.name));
+    dispatch(setProjectId({projectId,uid:projectData?.uid}));
     sethtml(html);
     setcss(css);
     setjs(js);

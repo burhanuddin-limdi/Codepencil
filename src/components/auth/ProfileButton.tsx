@@ -1,7 +1,7 @@
 "use client";
 import { FunctionComponent, useEffect, useState } from "react";
 import { Button } from "../ui/button";
-import { FolderKanban, Mail, User as UserIcon, UserRound } from "lucide-react";
+import { FolderKanban, LogOut, Mail, User as UserIcon, UserRound } from "lucide-react";
 import { Tooltip } from "../ui/Tooltip";
 import {
   DropdownMenu,
@@ -16,9 +16,9 @@ import {
   DropdownMenuSubTrigger,
   DropdownMenuTrigger,
 } from "../ui/dropdown-menu";
-import { User } from "firebase/auth";
+import { signOut, User } from "firebase/auth";
 import { doc, getDoc } from "firebase/firestore";
-import { db } from "../../../firebaseConfig";
+import { auth, db } from "../../../firebaseConfig";
 import Link from "next/link";
 
 interface ProfileButtonProps {
@@ -79,9 +79,14 @@ const ProfileButton: FunctionComponent<ProfileButtonProps> = ({ user }) => {
                       </DropdownMenuItem>
                     );
                   })}
+                  {projects.length === 0 && <DropdownMenuItem>No projects found</DropdownMenuItem>}
                 </DropdownMenuSubContent>
               </DropdownMenuPortal>
             </DropdownMenuSub>
+            <DropdownMenuItem className="bg-zinc-800 text-white border-zinc-400 " onClick={() => signOut(auth)}>
+              <LogOut className="mr-2 h-4 w-4" />
+              <span>Logout</span>
+            </DropdownMenuItem>
           </DropdownMenuGroup>
         </DropdownMenuContent>
       </DropdownMenu>
