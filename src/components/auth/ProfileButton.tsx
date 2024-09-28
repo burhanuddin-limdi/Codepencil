@@ -1,7 +1,13 @@
 "use client";
 import { FunctionComponent, useEffect, useState } from "react";
 import { Button } from "../ui/button";
-import { FolderKanban, LogOut, Mail, User as UserIcon, UserRound } from "lucide-react";
+import {
+  FolderKanban,
+  LogOut,
+  Mail,
+  User as UserIcon,
+  UserRound,
+} from "lucide-react";
 import { Tooltip } from "../ui/Tooltip";
 import {
   DropdownMenu,
@@ -23,9 +29,13 @@ import Link from "next/link";
 
 interface ProfileButtonProps {
   user: User;
+  isMobile?: boolean;
 }
 
-const ProfileButton: FunctionComponent<ProfileButtonProps> = ({ user }) => {
+const ProfileButton: FunctionComponent<ProfileButtonProps> = ({
+  user,
+  isMobile,
+}) => {
   const [projects, setProjects] = useState([]);
   useEffect(() => {
     getData();
@@ -35,12 +45,10 @@ const ProfileButton: FunctionComponent<ProfileButtonProps> = ({ user }) => {
     const uid = user.uid;
     const userDocRef = doc(db, "users", uid);
     const userDocSnap = await getDoc(userDocRef);
-    console.log(userDocSnap.exists());
 
     if (userDocSnap.exists()) {
       const data = userDocSnap.data().projects || [];
       setProjects(data);
-      console.log(data);
     }
   }
 
@@ -51,9 +59,12 @@ const ProfileButton: FunctionComponent<ProfileButtonProps> = ({ user }) => {
           <DropdownMenuTrigger asChild>
             <Button
               variant="ghost"
-              className="focus-visible:ring-0 focus-visible:ring-offset-0 bg-zinc-800 text-white transition-all px-2 hover:bg-zinc-600 rounded-md aspect-square"
+              className={`focus-visible:ring-0 focus-visible:ring-offset-0  transition-all px-2 hover:bg-zinc-600 rounded-md aspect-square ${
+                isMobile ? "bg-white text-black" : "bg-zinc-800 text-white"
+              }`}
             >
-              <UserRound />
+              <UserRound className="h-4 w-4 mr-2" />
+              {isMobile && <span>Profile</span>}
             </Button>
           </DropdownMenuTrigger>
         </Tooltip>
@@ -79,11 +90,16 @@ const ProfileButton: FunctionComponent<ProfileButtonProps> = ({ user }) => {
                       </DropdownMenuItem>
                     );
                   })}
-                  {projects.length === 0 && <DropdownMenuItem>No projects found</DropdownMenuItem>}
+                  {projects.length === 0 && (
+                    <DropdownMenuItem>No projects found</DropdownMenuItem>
+                  )}
                 </DropdownMenuSubContent>
               </DropdownMenuPortal>
             </DropdownMenuSub>
-            <DropdownMenuItem className="bg-zinc-800 text-white border-zinc-400 " onClick={() => signOut(auth)}>
+            <DropdownMenuItem
+              className="bg-zinc-800 text-white border-zinc-400 "
+              onClick={() => signOut(auth)}
+            >
               <LogOut className="mr-2 h-4 w-4" />
               <span>Logout</span>
             </DropdownMenuItem>

@@ -66,13 +66,16 @@ const LoginPage: FunctionComponent<LoginPageProps> = () => {
   };
 
   return (
-    <main className="w-full h-screen flex justify-center items-center bg-zinc-900">
+    <main className="w-screen h-screen flex justify-center items-center bg-zinc-900">
       <Card className="bg-zinc-950 border border-zinc-100">
         <CardHeader>
           <CardTitle className="text-white">Login</CardTitle>
         </CardHeader>
         <CardContent>
-          <form onSubmit={handleSubmit} className="w-screen max-w-md">
+          <form
+            onSubmit={handleSubmit}
+            className="w-screen max-w-[300px] md:max-w-md"
+          >
             <Input
               type="email"
               placeholder="Email"

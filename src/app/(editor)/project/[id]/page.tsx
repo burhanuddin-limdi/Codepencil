@@ -13,6 +13,7 @@ import {
   changeProjectEdited,
   setProjectId,
 } from "@/store/features/project-data.slice";
+import MobileEditorLayout from "@/components/editor/MobileEditorLayout";
 
 interface ProjectProps {}
 
@@ -20,6 +21,8 @@ const Project: FunctionComponent<ProjectProps> = () => {
   const router = useRouter();
   const params = useParams();
   const dispatch = useAppDispatch();
+  const [isMobile, setIsMobile] = useState(false);
+
   const htmlCode = useAppSelector(
     (state) => state.projectDataSlice.value.htmlCode ?? ""
   );
@@ -55,6 +58,13 @@ const Project: FunctionComponent<ProjectProps> = () => {
     } else {
       router.push("/");
     }
+
+    handleResize();
+    window.addEventListener("resize", handleResize);
+
+    return () => {
+      window.removeEventListener("resize", handleResize);
+    };
   }, [params]);
 
   useEffect(() => {
@@ -67,6 +77,12 @@ const Project: FunctionComponent<ProjectProps> = () => {
     }
   }, [htmlCode, cssCode, jsCode]);
 
+  function handleResize() {
+    const isScreenMobile = window.innerWidth < 600;
+    const isDeviceMobile = /Mobi|Android/i.test(navigator.userAgent);
+    setIsMobile(isScreenMobile || isDeviceMobile);
+  }
+
   async function getData(projectId: string) {
     const projectDocRef = doc(db, "projects", projectId);
     const projectDocSnap = await getDoc(projectDocRef);
@@ -77,12 +93,11 @@ const Project: FunctionComponent<ProjectProps> = () => {
     const js = projectData?.js;
 
     dispatch(changeName(projectData?.name));
-    dispatch(setProjectId({projectId,uid:projectData?.uid}));
+    dispatch(setProjectId({ projectId, uid: projectData?.uid }));
     sethtml(html);
     setcss(css);
     setjs(js);
     setOrignalCode(`${html}${css}${js}`);
-    console.log(`${html}${css}${js}`);
 
     setSrcDoc(`
         <html>
@@ -96,18 +111,30 @@ const Project: FunctionComponent<ProjectProps> = () => {
 
   return (
     <>
-      {showEditor && (
-        <EditorLayout
-          htmlCode={htmlCode}
-          cssCode={cssCode}
-          jsCode={jsCode}
-          srcDoc={srcDoc}
-          setSrcDoc={setSrcDoc}
-          setcss={setcss}
-          sethtml={sethtml}
-          setjs={setjs}
-        />
-      )}
+      {showEditor &&
+        (isMobile ? (
+          <MobileEditorLayout
+            htmlCode={htmlCode}
+            cssCode={cssCode}
+            jsCode={jsCode}
+            srcDoc={srcDoc}
+            setSrcDoc={setSrcDoc}
+            setcss={setcss}
+            sethtml={sethtml}
+            setjs={setjs}
+          />
+        ) : (
+          <EditorLayout
+            htmlCode={htmlCode}
+            cssCode={cssCode}
+            jsCode={jsCode}
+            srcDoc={srcDoc}
+            setSrcDoc={setSrcDoc}
+            setcss={setcss}
+            sethtml={sethtml}
+            setjs={setjs}
+          />
+        ))}
     </>
   );
 };

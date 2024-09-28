@@ -102,7 +102,10 @@ const SignUpPage: FunctionComponent<SignUpPageProps> = () => {
           <CardTitle className="text-white">Sign Up</CardTitle>
         </CardHeader>
         <CardContent>
-          <form onSubmit={handleSubmit} className="w-screen max-w-md">
+          <form
+            onSubmit={handleSubmit}
+            className="w-screen max-w-[300px] md:max-w-md"
+          >
             <Input
               type="email"
               placeholder="Email"

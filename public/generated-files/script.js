@@ -1,1 +1,0 @@
-document.querySelectorAll('h1')[0].style.color = "purple";

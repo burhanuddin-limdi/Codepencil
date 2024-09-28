@@ -54,9 +54,6 @@ const SaveCodeButton: FunctionComponent<SaveCodeButtonProps> = ({ user }) => {
     (state) => state.projectDataSlice.value.uid
   );
 
-  useEffect(() => {
-    console.log(pathname);
-  }, [pathname]);
   function save() {
     if (pathname?.includes("editor")) {
       saveNewProject();
@@ -68,19 +65,16 @@ const SaveCodeButton: FunctionComponent<SaveCodeButtonProps> = ({ user }) => {
   async function updateProject() {
     if (user && projectId) {
       if (projectUid === user.uid) {
-        console.log("owner");
         const uid = user.uid;
         const userDocRef = doc(db, "users", uid);
         const projectDocRef = doc(db, "projects", projectId);
         try {
           const userDocSnap = await getDoc(userDocRef);
-          console.log(userDocSnap.exists());
 
           let currentProjects: any = [];
 
           if (userDocSnap.exists()) {
             currentProjects = userDocSnap.data().projects || [];
-            console.log(currentProjects);
           }
 
           currentProjects = currentProjects.map((project: any) => {
@@ -108,14 +102,12 @@ const SaveCodeButton: FunctionComponent<SaveCodeButtonProps> = ({ user }) => {
             createdAt: moment().format("YYYY-MM-DD HH:mm:ss"),
           });
 
-          console.log("Project saved successfully.");
           localStorage.clear();
           router.push(`/project/${projectId}`);
         } catch (error) {
           console.log(error);
         }
       } else {
-        console.log("Error: You are not authorized to save this project.");
         setShowPopup(true);
       }
     }
@@ -129,13 +121,11 @@ const SaveCodeButton: FunctionComponent<SaveCodeButtonProps> = ({ user }) => {
       const projectDocRef = doc(db, "projects", projectId);
       try {
         const userDocSnap = await getDoc(userDocRef);
-        console.log(userDocSnap.exists());
 
         let currentProjects: any = [];
 
         if (userDocSnap.exists()) {
           currentProjects = userDocSnap.data().projects || [];
-          console.log(currentProjects);
         }
 
         currentProjects.push({
@@ -158,7 +148,6 @@ const SaveCodeButton: FunctionComponent<SaveCodeButtonProps> = ({ user }) => {
           createdAt: moment().format("YYYY-MM-DD HH:mm:ss"),
         });
 
-        console.log("Project saved successfully.");
         localStorage.clear();
         setShowPopup(false);
         router.push(`/project/${projectId}`);

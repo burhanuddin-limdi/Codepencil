@@ -1,24 +1,17 @@
 "use client";
-import { useEffect, useState } from "react";
-import useLocalStorage from "@/hooks/useLocalStorage";
-import EditorLayout from "@/components/editor/EditorLayout";
-import { useParams, useRouter } from "next/navigation";
-import { useAppDispatch, useAppSelector } from "@/store/hooks";
 import {
-  changeHtml,
-  changeCss,
   changeJs,
+  changeCss,
+  changeHtml,
   changeProjectEdited,
-  changeName,
-  setProjectId,
 } from "@/store/features/project-data.slice";
+import { useEffect, useState } from "react";
+import { useParams, useRouter } from "next/navigation";
+import EditorLayout from "@/components/editor/EditorLayout";
+import { useAppDispatch, useAppSelector } from "@/store/hooks";
+import MobileEditorLayout from "@/components/editor/MobileEditorLayout";
 
 export default function Editor() {
-  // const [htmlCode, sethtml] = useLocalStorage("html", "");
-  // const [cssCode, setcss] = useLocalStorage("css", "");
-  // const [jsCode, setjs] = useLocalStorage("js", "");
-  // const [srcDoc, setSrcDoc] = useState("");
-
   const router = useRouter();
   const params = useParams();
   const dispatch = useAppDispatch();
@@ -32,6 +25,11 @@ export default function Editor() {
     (state) => state.projectDataSlice.value.jsCode ?? ""
   );
 
+  const [srcDoc, setSrcDoc] = useState("");
+  const [showEditor, setShowEditor] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
+  const [originalCode, setOriginalCode] = useState("");
+
   function sethtml(html: string) {
     dispatch(changeHtml(html));
   }
@@ -44,18 +42,21 @@ export default function Editor() {
     dispatch(changeJs(js));
   }
 
-  const [srcDoc, setSrcDoc] = useState("");
-  const [showEditor, setshowEditor] = useState(false);
-  const [orignalCode, setOrignalCode] = useState("");
-
   useEffect(() => {
+    handleResize();
     getData();
+    window.addEventListener("resize", handleResize);
+
+    // Clean up event listener on unmount
+    return () => {
+      window.removeEventListener("resize", handleResize);
+    };
   }, [params]);
 
   useEffect(() => {
     const newCode = `${htmlCode}${cssCode}${jsCode}`;
 
-    if (newCode !== orignalCode) {
+    if (newCode !== originalCode) {
       dispatch(changeProjectEdited(true));
     } else {
       dispatch(changeProjectEdited(false));
@@ -67,37 +68,53 @@ export default function Editor() {
     const css = localStorage.getItem("codepencil-css")?.slice(1, -1) || "";
     const js = localStorage.getItem("codepencil-js")?.slice(1, -1) || "";
 
-    console.log(html, css, js);
-
     sethtml(html);
     setcss(css);
     setjs(js);
-    setOrignalCode(`${html}${css}${js}`);
-    console.log(`${html}${css}${js}`);
+    setOriginalCode(`${html}${css}${js}`);
 
     setSrcDoc(`
-        <html>
-          <body>${html}</body>
-          <style>${css}</style>
-          <script>${js}</script>
-        </html>
-      `);
-    setshowEditor(true);
+      <html>
+        <body>${html}</body>
+        <style>${css}</style>
+        <script>${js}</script>
+      </html>
+    `);
+    setShowEditor(true);
   }
+
+  function handleResize() {
+    const isScreenMobile = window.innerWidth < 600;
+    const isDeviceMobile = /Mobi|Android/i.test(navigator.userAgent);
+    setIsMobile(isScreenMobile || isDeviceMobile);
+  }
+
   return (
     <>
-      {showEditor && (
-        <EditorLayout
-          htmlCode={htmlCode}
-          cssCode={cssCode}
-          jsCode={jsCode}
-          srcDoc={srcDoc}
-          setSrcDoc={setSrcDoc}
-          setcss={setcss}
-          sethtml={sethtml}
-          setjs={setjs}
-        />
-      )}
+      {showEditor &&
+        (isMobile ? (
+          <MobileEditorLayout
+            htmlCode={htmlCode}
+            cssCode={cssCode}
+            jsCode={jsCode}
+            srcDoc={srcDoc}
+            setSrcDoc={setSrcDoc}
+            setcss={setcss}
+            sethtml={sethtml}
+            setjs={setjs}
+          />
+        ) : (
+          <EditorLayout
+            htmlCode={htmlCode}
+            cssCode={cssCode}
+            jsCode={jsCode}
+            srcDoc={srcDoc}
+            setSrcDoc={setSrcDoc}
+            setcss={setcss}
+            sethtml={sethtml}
+            setjs={setjs}
+          />
+        ))}
     </>
   );
 }
