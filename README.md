@@ -1,36 +1,93 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# CodePencil
+
+CodePencil is a CodePen clone that allows users to write and preview HTML, CSS, and JavaScript code in real time. The project is built using **Next.js**, **Shadcn**, and **Firebase** for authentication and data storage, making it a modern and scalable code-sharing platform.
+
+<img src="public/images/logo.svg" alt="Codepencil logo" width="100" height="100">
+
+## About the Project
+
+CodePencil aims to provide an intuitive, user-friendly environment for developers to create, save, and share their coding projects. It features live code previews, multiple project management, and a simple and clean interface.
+
+## Features
+
+- **Live Code Editor**: Write and preview HTML, CSS, and JavaScript in real time.
+- **Autocomplete**: Provides code suggestions and autocomplete for HTML, CSS, and JavaScript, enhancing the coding experience.
+- **Multiple Projects**: Users can create and manage multiple projects.
+- **Firebase Authentication**: Secure login with Google and GitHub.
+- **Project Saving**: Save projects using Firebase Firestore and retrieve them at any time.
+- **Responsive Design**: Fully responsive, adapting to all screen sizes.
+- **User-friendly UI**: Built using Shadcn to ensure a clean and efficient user interface.
+
+## Screenshots
+
+<div style="display: flex;">
+  <img src="public/images/screenshot.png" alt="Screenshot" height="400">
+  <img src="public/images/screenshot-mobile.png" alt="Screenshot mobile" height="400" style="margin-left:50px">
+</div>
+
+## Live Demo
+
+Check out the live version of CodePencil: [Live Demo](https://codepencil-app.vercel.app)
 
 ## Getting Started
 
-First, run the development server:
+To get a local copy of CodePencil up and running, follow these steps:
 
+### Prerequisites
+
+Make sure you have the following installed:
+
+- **Node.js** (v16 or later)
+- **npm** or **yarn**
+- **Firebase CLI** (for Firebase-related services)
+
+### Installation
+
+1. Clone the repository:
+    ```bash
+    git clone https://github.com/your-username/codepencil.git
+    ```
+
+2. Navigate to the project directory:
+    ```bash
+    cd codepencil
+    ```
+
+3. Install the dependencies:
+    ```bash
+    npm install
+    # or
+    yarn install
+    ```
+
+### Firebase Setup
+
+1. Set up a Firebase project and Firestore database by following the [Firebase Setup Guide](https://firebase.google.com/docs/web/setup).
+2. Create a `.env.local` file in the root directory and add your Firebase configuration:
+    ```env
+    NEXT_PUBLIC_FIREBASE_API_KEY=your-api-key
+    NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN=your-auth-domain
+    NEXT_PUBLIC_FIREBASE_PROJECT_ID=your-project-id
+    NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET=your-storage-bucket
+    NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID=your-messaging-sender-id
+    NEXT_PUBLIC_FIREBASE_APP_ID=your-app-id
+    ```
+
+### Running the App
+
+1. Start the development server:
+    ```bash
+    npm run dev
+    # or
+    yarn dev
+    ```
+
+2. Open [http://localhost:3000](http://localhost:3000) to view the app in your browser.
+
+### Build for Production
+
+To create a production build of the app, run:
 ```bash
-npm run dev
+npm run build
 # or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
-
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
-
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
-
-This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
-
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+yarn build
